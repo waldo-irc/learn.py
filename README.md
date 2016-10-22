@@ -29,3 +29,8 @@ bookielist (usage: !bookielist) - This grabs a list of all custom made commands 
 &nbsp;
 
 unbookie (usage: !unbookie command) - This deletes a command completely.
+
+# Current known issues - 
+&nbsp;
+
+Unbookie doesn't do a good restart, the way it restarts breaks any other modules in progress as it does a full sopel --quit and sopel -d --quiet to fully remove the module command.
