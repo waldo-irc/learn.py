@@ -7,7 +7,7 @@ This is a learn module i created for Sopel bot.  The module has been tested sign
 # installation
 &nbsp;
 
-Simply put learn.py, bookiecmds.py, and dictionary in your .sopel/modules folder, and activate both bookiecmds.py and learn.py module.  
+Simply put learn.py, bookiecmds.py, and dictionary in your .sopel/modules folder, and activate both bookiecmds and learn modules.  
 &nbsp;
 
 bookiecmds.py contains all the new commands, dictionary is the dictionary it grabs the commands from, and learn.py is the main module that does the heavy lifting.
