@@ -292,20 +292,20 @@ def unbookie(bot, trigger):
     subprocess.check_output(['bash','-c', 'sopel --quit && sopel -d --quiet'])
 
 
-lastCusses = {}
+lastSpam = {}
 
 @sopel.module.rule('!(.*)bookie(.*)')
 def spam(bot, trigger):
-    if trigger.nick not in lastCusses:
-        lastCusses[trigger.nick] = []
+    if trigger.nick not in lastSpam:
+        lastSpam[trigger.nick] = []
         
     if not trigger.owner:
-        lastCusses[trigger.nick].append(trigger.time)
+        lastSpam[trigger.nick].append(trigger.time)
 
-    if len(lastCusses[trigger.nick]) >= 3:
-        firstCuss = lastCusses[trigger.nick].pop(0)
-        if (trigger.time - firstCuss).seconds <= 10:
+    if len(lastSpam[trigger.nick]) >= 3:
+        firstSpam = lastSpam[trigger.nick].pop(0)
+        if (trigger.time - firstSpam).seconds <= 10:
             bot.say("Don't abuse the privelege, bot will ignore you for 10 seconds.")
-            bot.msg("chanserv", "quiet ##ha %s" % trigger.nick)
+            bot.msg("chanserv", "quiet ##YOURCHANNEL %s" % trigger.nick)
             time.sleep(10)
-            bot.msg("chanserv", "unquiet ##ha %s" % trigger.nick)
+            bot.msg("chanserv", "unquiet ##YOURCHANNEL %s" % trigger.nick)
