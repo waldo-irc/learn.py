@@ -1,16 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sopel.module
-from sopel.module import example
-import collections
-import sys
-import time
-from sopel.tools import iteritems
-import sopel.loader
-import sopel.module
-import subprocess
-import re
-import json
+import sopel.module, from sopel.module import example, import collections, import sys, import time, from sopel.tools import iteritems, import sopel.loader, import sopel.module, import subprocess, import re, import json
 
 ##Here we check if the dictionary exists and has something in it.  If not, we create an empty dictionary.#######
 try:
