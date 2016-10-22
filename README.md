@@ -4,7 +4,13 @@
 This is a learn module i created for Sopel bot.  The module has been tested significantly and is sanitized/hardened (or seems like it hehe...if you find any bugs please let me know!) 
 &nbsp;
 
-Simply put learn.py, bookiecmds.py, and dictionary in your .sopel/modules folder, and activate both bookiecmds.py and learn.py module.  bookiecmds.py contains all the new commands, dictionary is the dictionary it grabs the commands from, and learn.py is the main module that does the heavy lifting.
+# installation
+&nbsp;
+
+Simply put learn.py, bookiecmds.py, and dictionary in your .sopel/modules folder, and activate both bookiecmds.py and learn.py module.  
+&nbsp;
+
+bookiecmds.py contains all the new commands, dictionary is the dictionary it grabs the commands from, and learn.py is the main module that does the heavy lifting.
 &nbsp;
 
 After installation, do a !samplecommand to make sure it works.  !unbookie can remove the sample command after.
