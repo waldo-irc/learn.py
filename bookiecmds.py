@@ -21,3 +21,6 @@ except (RuntimeError, TypeError, NameError, ValueError):
     commands = {}
 
 ##Custom Commands goes here
+@sopel.module.commands(u'samplecommand')
+def funcwfhlyqsc(bot, trigger):
+    bot.say("%s" % commands[u"samplecommand"][0])
