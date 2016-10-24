@@ -9,7 +9,7 @@ Simply put learn.py, bookiecmds.py, and dictionary in your .sopel/modules folder
 bookiecmds.py contains all the new commands, dictionary is the dictionary it grabs the commands from, and learn.py is the main module that does the heavy lifting.
 &nbsp;
 
-After installation, do a !samplecommand to make sure it works.  !unbookie can remove the sample command after.
+After installation, do a !samplecommand to make sure it works.  !unbookie samplecommand can remove the sample command after.
 &nbsp;
 
 # Commands
