@@ -8,8 +8,10 @@ sys.setdefaultencoding('utf8')
 @sopel.module.commands('bookie')
 @example('!bookie command insert stuff here')
 def bookie(bot, trigger):
-    if not trigger.group(3) or not trigger.group(4) or not trigger.admin:
+    if not trigger.group(3) or not trigger.group(4):
         bot.say('Usage is !bookie command command goes here')
+        exit(0)
+    elif not trigger.admin:
         bot.say('Must be bot admin to run.')
         exit(0)
 
@@ -21,7 +23,7 @@ def bookie(bot, trigger):
     except (RuntimeError, TypeError, NameError, ValueError):
         commands = {}
  
-    symbol = "~`!@#$%^&*()_-+={}[]:>;\"',</?*-+"
+    symbol = "~`!@#$%^&*()_-+={}[]:>;\"',</?*-+\\\\\\"
     commandexist = "abuse save quit msg part me join set mode unquiet topic kickban kick tmask showmask quiet unban ban announce py wa c settz settimeformat getchanneltz t gettz setchanneltimeformat gettimeformat setchanneltz getchanneltimeformat blocks useserviceauth choose d help iplookup console lmgtfy t0w3ntum deop op rand redditor setsafeforwork getsafeforwork in at safety duck suggest search seen ssh tell tld uptime waldo website w xkcd zncadd"
     arg1x = trigger.group(2).split(" ",1)[1]
     arg1 = arg1x.encode("utf-8")
@@ -31,7 +33,7 @@ def bookie(bot, trigger):
 
     for i in arg2:
         if i in symbol:
-            bot.say("Illegal characters detected.")
+            bot.say("Illegal characters detected in command name.")
             exit(0)
 
     if u'%s' % arg2.lower() in commands or arg2.lower() == 'bookie' or arg2.lower() == 'unbookie' or arg2.lower() == 'rebookie' or arg2.lower() in commandexist:
@@ -107,8 +109,10 @@ def load_module(bot, name, path, type_):
 @sopel.module.commands('rebookie')
 @example('!rebookie command insert stuff here')
 def rebookie(bot, trigger):
-    if not trigger.group(3) or not trigger.group(4) or not trigger.admin:
+    if not trigger.group(3) or not trigger.group(4):
         bot.say('Usage is !rebookie command command goes here')
+        exit(0)
+    elif not trigger.admin:
         bot.say('Must be bot admin to run.')
         exit(0)
 
@@ -122,18 +126,18 @@ def rebookie(bot, trigger):
 
     name = "bookiecmds"
     arg1 = trigger.group(2).split(" ",1)[1]
-    arg2 = trigger.group(3)
+    arg2 = trigger.group(3).encode("utf-8")
 
     bot.say("Changing %s value to %s." % (arg2,arg1))
 
-    if arg2.lower() not in commands:
+    if u"%s" % arg2.lower() not in commands:
         bot.say("Command doesn't exist to rebookie.")
         exit(0)
 
-    funcnum = commands[arg2.lower()][1]
-    commands[arg2.lower()] = []
-    commands[arg2.lower()].append(arg1)
-    commands[arg2.lower()].append(funcnum)
+    funcnum = commands[u'%s' % arg2.lower()][1]
+    commands[u'%s' % arg2.lower()] = []
+    commands[u'%s' % arg2.lower()].append(arg1)
+    commands[u'%s' % arg2.lower()].append(funcnum)
 
     f = open('/home/sopel/.sopel/modules/dictionary', 'w')
     f.write(json.dumps(commands))
@@ -220,8 +224,10 @@ def bookielist(bot, trigger):
 @sopel.module.commands('unbookie')
 @example('!unbookie command')
 def unbookie(bot, trigger):
-    if not trigger.group(3) or not trigger.admin:
+    if not trigger.group(3):
         bot.say('Usage is !unbookie command')
+        exit(0)
+    elif not trigger.admin:
         bot.say('Must be bot admin to run.')
         exit(0)
     
@@ -233,16 +239,16 @@ def unbookie(bot, trigger):
     except (RuntimeError, TypeError, NameError, ValueError):
         commands = {}
 
-    key = trigger.group(3)
+    key = trigger.group(3).encode("utf-8")
     name = "bookiecmds"
 
     bot.say("Removing %s command." % (key.lower()))
 
-    if key.lower() not in commands:
+    if u'%s' % key.lower() not in commands:
         bot.say("Command doesn't exist to unbookie.")
         exit(0)
-        
-    funcnum = commands[key.lower()][1]
+
+    funcnum = commands[u'%s' % key.lower()][1]
     lookupcmd = "@sopel.module.commands(u'%s')" % key.lower()
     lookupfunc = 'def func%ssc(bot, trigger):' % funcnum
 
@@ -280,7 +286,7 @@ def unbookie(bot, trigger):
 
     subprocess.check_output(['bash','-c', 'cp /home/sopel/.sopel/modules/bookie.py2 /home/sopel/.sopel/modules/bookiecmds.py'])
 
-    del commands["%s" % key.lower()]
+    del commands[u'%s' % key.lower()]
     f = open('/home/sopel/.sopel/modules/dictionary', 'w')
     f.write(json.dumps(commands))
     f.close()
@@ -290,6 +296,7 @@ def unbookie(bot, trigger):
     bot.say('Done')
 
     subprocess.check_output(['bash','-c', 'sopel --quit && sopel -d --quiet'])
+    #subprocess.check_output(['bash','-c', 'sopel -d --quiet'])
 
 
 lastSpam = {}
