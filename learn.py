@@ -234,7 +234,6 @@ def unbookie(bot, trigger):
         commands = {}
 
     key = trigger.group(3)
-    funcnum = commands[key.lower()][1]
     name = "bookiecmds"
 
     bot.say("Removing %s command." % (key.lower()))
@@ -242,7 +241,8 @@ def unbookie(bot, trigger):
     if key.lower() not in commands:
         bot.say("Command doesn't exist to unbookie.")
         exit(0)
-
+        
+    funcnum = commands[key.lower()][1]
     lookupcmd = "@sopel.module.commands(u'%s')" % key.lower()
     lookupfunc = 'def func%ssc(bot, trigger):' % funcnum
 
