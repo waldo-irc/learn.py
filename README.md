@@ -3,10 +3,9 @@ This is a learn module i created for Sopel bot.  The module has been tested sign
 &nbsp;
 
 # Installation
-Simply put learn.py, bookiecmds.py, and dictionary in your .sopel/modules folder, and activate both bookiecmds and learn modules.  
-&nbsp;
+Simply put learn.py and dictionary in your .sopel/modules folder, and activate the learn module.
 
-bookiecmds.py contains all the new commands, dictionary is the dictionary it grabs the commands from, and learn.py is the main module that does the heavy lifting.
+Learn.py does the heavy lifting, dictionary holds the commands, learn_bl holds users who have been blacklisted from created commands for 24 hrs (in order to throttle).
 &nbsp;
 
 After installation, do a !samplecommand to make sure it works.  !unbookie samplecommand can remove the sample command after.
@@ -28,4 +27,7 @@ unbookie (usage: !unbookie cmd) - This deletes a command completely.
 !yournewcommand - To run your newly created command.
 
 # Current known issues - 
-Unbookie doesn't do a good restart. The way it restarts breaks any other modules in progress as it does a full sopel --quit and sopel -d --quiet to fully remove the module command.
+None -
+
+# Plans to come
+Plans to add a command limit.
