@@ -15,6 +15,8 @@ import random, string
 import datetime
 from dateutil.parser import parse as parse_date
 import calendar
+from sopel.formatting import bold
+import textwrap
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -29,10 +31,10 @@ def bookie(bot, trigger):
 
     ##Here we check if the dictionary exists and has something in it.  If not, we create an empty dictionary.#######
     try:
-        f = open('/home/sopel/.sopel/modules/dictionary', 'r')
+        f = open('/home/sopel/.sopel/modules/learn_cmds', 'r')
         commands = json.loads(f.read())
         f.close()
-    except (RuntimeError, TypeError, NameError, ValueError):
+    except (RuntimeError, TypeError, NameError, ValueError, AttributeError, IOError):
         commands = {}
     ##Here we load anyone that has already made a command and must wait##
     try:
@@ -42,10 +44,10 @@ def bookie(bot, trigger):
     except (RuntimeError, TypeError, NameError, ValueError, AttributeError, IOError):
         lastRule = {}
 
+    name_length = max(6, max(len(k) for k in bot.command_groups.keys()))
     currenttime = calendar.timegm(trigger.time.timetuple())
     today = datetime.datetime.today()
     symbol = "~`!@#$%^&*()_-+={}[]:>;\"',</?*-+\\\\\\"
-    commandexist = "abuse save quit msg part me join set mode unquiet topic kickban kick tmask showmask quiet unban ban announce py wa c settz settimeformat getchanneltz t gettz setchanneltimeformat gettimeformat setchanneltz getchanneltimeformat blocks useserviceauth choose d help iplookup console lmgtfy t0w3ntum deop op rand redditor setsafeforwork getsafeforwork in at safety duck suggest search seen ssh tell tld uptime waldo website w xkcd zncadd"
     arg1x = trigger.group(2).split(" ",1)[1]
     arg1 = arg1x.encode("utf-8")
     arg2x = trigger.group(3)
@@ -73,13 +75,19 @@ def bookie(bot, trigger):
         bot.say("Command name has a 15 character limit.")
         exit(0)
 
-    if u'%s' % arg2.lower() in commands or arg2.lower() == 'bookie' or arg2.lower() == 'unbookie' or arg2.lower() == 'rebookie' or arg2.lower() == 'bookielist' or arg2.lower() in commandexist:
-        bot.say("Command already exists.")
+    for category, cmds in collections.OrderedDict(sorted(bot.command_groups.items())).items():
+        for line in cmds:
+            if line.lower() == arg2.lower():
+                bot.say('%s is already a Sopel command.' % line)
+                exit(0)
+
+    if u'%s' % arg2.lower() in commands or arg2.lower() == 'bookie' or arg2.lower() == 'unbookie' or arg2.lower() == 'rebookie' or arg2.lower() == 'bookielist' or arg2.lower() == 'mybookielist':
+        bot.say("Command already exists in Sopel learn.")
         exit(0)
 
     if u'%s' % trigger.nick.lower() in lastRule and not trigger.admin:
         oldtime = datetime.datetime.utcfromtimestamp(lastRule[u'%s' % trigger.nick.lower()][0])
-        newtime = datetime.datetime.today()
+        newtime = datetime.datetime.utcnow()
         if ( newtime - oldtime ) < datetime.timedelta(hours=24):
             bot.say("Must wait 24 hours before creating a new command.")
             exit(0)
@@ -99,7 +107,7 @@ def bookie(bot, trigger):
     commands[arg2.lower()].append(arg1)
     commands[arg2.lower()].append(trigger.nick.lower())
 
-    f = open('/home/sopel/.sopel/modules/dictionary', 'w')
+    f = open('/home/sopel/.sopel/modules/learn_cmds', 'w')
     f.write(json.dumps(commands))
     f.close()
 
@@ -115,7 +123,7 @@ def rebookie(bot, trigger):
 
     ##Here we check if the dictionary exists and has something in it.  If not, we create an empty dictionary.#######
     try:
-        f = open('/home/sopel/.sopel/modules/dictionary', 'r')
+        f = open('/home/sopel/.sopel/modules/learn_cmds', 'r')
         commands = json.loads(f.read())
         f.close()
     except (RuntimeError, TypeError, NameError, ValueError):
@@ -139,7 +147,7 @@ def rebookie(bot, trigger):
         commands[u'%s' % arg2.lower()].append(arg1)
         commands[u'%s' % arg2.lower()].append(creator)
 
-        f = open('/home/sopel/.sopel/modules/dictionary', 'w')
+        f = open('/home/sopel/.sopel/modules/learn_cmds', 'w')
         f.write(json.dumps(commands))
         f.close()
 
@@ -154,7 +162,7 @@ def rebookie(bot, trigger):
 def bookielist(bot, trigger):
     ##Here we check if the dictionary exists and has something in it.  If not, we create an empty dictionary.#######
     try:
-        f = open('/home/sopel/.sopel/modules/dictionary', 'r')
+        f = open('/home/sopel/.sopel/modules/learn_cmds', 'r')
         commands = json.loads(f.read())
         f.close()
     except (RuntimeError, TypeError, NameError, ValueError):
@@ -187,6 +195,46 @@ def bookielist(bot, trigger):
         elif trigger.admin:
             bot.msg(trigger.nick,color.BOLD + "Command %s " % x + color.END + '"%s"'  % key.upper() + u' *(Made by %s)' % commands[key][1])
             x+=1
+        else:
+            bot.msg(trigger.nick,color.BOLD + "Command %s " % x + color.END + '"%s"'  % key.upper())
+            x+=1
+
+@sopel.module.commands('mybookielist')
+@priority('low')
+@example('!mybookielist')
+def mybookielist(bot, trigger):
+    ##Here we check if the dictionary exists and has something in it.  If not, we create an empty dictionary.#######
+    try:
+        f = open('/home/sopel/.sopel/modules/learn_cmds', 'r')
+        commands = json.loads(f.read())
+        f.close()
+    except (RuntimeError, TypeError, NameError, ValueError):
+        commands = {}
+
+    if trigger.is_privmsg:
+        bot.msg("waldo", u'%s using !mybookielist' % trigger.nick)
+
+    bot.say("PM'ing you a list of created commands.")
+
+    x = 1
+
+    class color:
+       PURPLE = '\033[95m'
+       CYAN = '\033[96m'
+       DARKCYAN = '\033[36m'
+       BLUE = '\033[94m'
+       GREEN = '\033[92m'
+       YELLOW = '\033[93m'
+       RED = '\033[91m'
+       BOLD = '\033[1m'
+       UNDERLINE = '\033[4m'
+       END = '\033[0m'
+
+    bot.msg(trigger.nick,color.BOLD + "###LISTING COMMANDS###" + color.END)
+    for key, value in commands.iteritems():
+        if commands[key][1] == trigger.nick:
+            bot.msg(trigger.nick,color.BOLD + "Command %s " % x + color.END + '"%s"'  % key.upper() + " *(You created this)")
+            x+=1
 
 @sopel.module.commands('unbookie')
 @example('!unbookie command')
@@ -197,7 +245,7 @@ def unbookie(bot, trigger):
 
     ##Here we check if the dictionary exists and has something in it.  If not, we create an empty dictionary.#######
     try:
-        f = open('/home/sopel/.sopel/modules/dictionary', 'r')
+        f = open('/home/sopel/.sopel/modules/learn_cmds', 'r')
         commands = json.loads(f.read())
         f.close()
     except (RuntimeError, TypeError, NameError, ValueError):
@@ -216,33 +264,12 @@ def unbookie(bot, trigger):
 
     if trigger.nick.lower() in commands[u'%s' % key.lower()][1] or trigger.admin:
         del commands[u'%s' % key.lower()]
-        f = open('/home/sopel/.sopel/modules/dictionary', 'w')
+        f = open('/home/sopel/.sopel/modules/learn_cmds', 'w')
         f.write(json.dumps(commands))
         f.close()
-
         bot.say('Done')
     else:
         bot.say("Must be Command Creator or admin to change.")
-
-
-############Spam throttling###################################
-#lastSpam = {}
-
-#@sopel.module.rule('\!(.*)bookie(.*)')
-#def spam(bot, trigger):
-#    if trigger.nick not in lastSpam:
-#        lastSpam[trigger.nick] = []
-
-#    if not trigger.owner:
-#        lastSpam[trigger.nick].append(trigger.time)
-
-#    if len(lastSpam[trigger.nick]) >= 3:
-#        firstSpam = lastSpam[trigger.nick].pop(0)
-#        if (trigger.time - firstSpam).seconds <= 10:
-#            bot.say("Don't abuse the privelege, bot will ignore you for 10 seconds.")
-#            bot.msg("chanserv", "quiet ##ha %s" % trigger.nick)
-#            time.sleep(10)
-#            bot.msg("chanserv", "unquiet ##ha %s" % trigger.nick)
 
 
 ##########Custom commands spawn here####################################
@@ -252,7 +279,7 @@ def unbookie(bot, trigger):
 def bookienew(bot, trigger):
     try:
         try:
-            f = open('/home/sopel/.sopel/modules/dictionary', 'r')
+            f = open('/home/sopel/.sopel/modules/learn_cmds', 'r')
             commands = json.loads(f.read())
             f.close()
         except (RuntimeError, TypeError, NameError, ValueError):
