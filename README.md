@@ -33,4 +33,4 @@ unbookie (usage: !unbookie cmd) - This deletes a command completely.
 None -
 
 # Plans to come
-Plans to add a command limit.
+None - 
