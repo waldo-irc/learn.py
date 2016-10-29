@@ -17,6 +17,8 @@ from dateutil.parser import parse as parse_date
 import calendar
 from sopel.formatting import bold
 import textwrap
+from os.path import expanduser
+import os
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -31,14 +33,14 @@ def bookie(bot, trigger):
 
     ##Here we check if the dictionary exists and has something in it.  If not, we create an empty dictionary.#######
     try:
-        f = open('/home/sopel/.sopel/modules/learn_cmds', 'r')
+        f = open(os.path.join(os.path.expanduser('~'),'.sopel/learn_cmds'), 'r')
         commands = json.loads(f.read())
         f.close()
     except (RuntimeError, TypeError, NameError, ValueError, AttributeError, IOError):
         commands = {}
     ##Here we load anyone that has already made a command and must wait##
     try:
-        f = open('/home/sopel/.sopel/modules/learn_bl', 'r')
+        f = open(os.path.join(os.path.expanduser('~'),'.sopel/learn_bl'), 'r')
         lastRule = json.loads(f.read())
         f.close()
     except (RuntimeError, TypeError, NameError, ValueError, AttributeError, IOError):
@@ -97,7 +99,7 @@ def bookie(bot, trigger):
     if u'%s' % trigger.nick.lower() not in lastRule and not trigger.admin:
         lastRule[u'%s' % trigger.nick.lower()] = []
         lastRule[u'%s' % trigger.nick.lower()].append(currenttime)
-        f = open('/home/sopel/.sopel/modules/learn_bl', 'w+')
+        f = open(os.path.join(os.path.expanduser('~'),'.sopel/learn_bl'), 'w+')
         f.write(json.dumps(lastRule))
         f.close()
 
@@ -107,7 +109,7 @@ def bookie(bot, trigger):
     commands[arg2.lower()].append(arg1)
     commands[arg2.lower()].append(trigger.nick.lower())
 
-    f = open('/home/sopel/.sopel/modules/learn_cmds', 'w')
+    f = open(os.path.join(os.path.expanduser('~'),'.sopel/learn_cmds'), 'w')
     f.write(json.dumps(commands))
     f.close()
 
@@ -123,10 +125,10 @@ def rebookie(bot, trigger):
 
     ##Here we check if the dictionary exists and has something in it.  If not, we create an empty dictionary.#######
     try:
-        f = open('/home/sopel/.sopel/modules/learn_cmds', 'r')
+        f = open(os.path.join(os.path.expanduser('~'),'.sopel/learn_cmds'), 'r')
         commands = json.loads(f.read())
         f.close()
-    except (RuntimeError, TypeError, NameError, ValueError):
+    except (RuntimeError, TypeError, NameError, ValueError, IOError):
         commands = {}
 
     arg1 = trigger.group(2).split(" ",1)[1]
@@ -147,7 +149,7 @@ def rebookie(bot, trigger):
         commands[u'%s' % arg2.lower()].append(arg1)
         commands[u'%s' % arg2.lower()].append(creator)
 
-        f = open('/home/sopel/.sopel/modules/learn_cmds', 'w')
+        f = open(os.path.join(os.path.expanduser('~'),'.sopel/learn_cmds'), 'w')
         f.write(json.dumps(commands))
         f.close()
 
@@ -162,10 +164,10 @@ def rebookie(bot, trigger):
 def bookielist(bot, trigger):
     ##Here we check if the dictionary exists and has something in it.  If not, we create an empty dictionary.#######
     try:
-        f = open('/home/sopel/.sopel/modules/learn_cmds', 'r')
+        f = open(os.path.join(os.path.expanduser('~'),'.sopel/learn_cmds'), 'r')
         commands = json.loads(f.read())
         f.close()
-    except (RuntimeError, TypeError, NameError, ValueError):
+    except (RuntimeError, TypeError, NameError, ValueError, IOError):
         commands = {}
 
     if trigger.is_privmsg:
@@ -205,10 +207,10 @@ def bookielist(bot, trigger):
 def mybookielist(bot, trigger):
     ##Here we check if the dictionary exists and has something in it.  If not, we create an empty dictionary.#######
     try:
-        f = open('/home/sopel/.sopel/modules/learn_cmds', 'r')
+        f = open(os.path.join(os.path.expanduser('~'),'.sopel/learn_cmds'), 'r')
         commands = json.loads(f.read())
         f.close()
-    except (RuntimeError, TypeError, NameError, ValueError):
+    except (RuntimeError, TypeError, NameError, ValueError, IOError):
         commands = {}
 
     if trigger.is_privmsg:
@@ -245,10 +247,10 @@ def unbookie(bot, trigger):
 
     ##Here we check if the dictionary exists and has something in it.  If not, we create an empty dictionary.#######
     try:
-        f = open('/home/sopel/.sopel/modules/learn_cmds', 'r')
+        f = open(os.path.join(os.path.expanduser('~'),'.sopel/learn_cmds'), 'r')
         commands = json.loads(f.read())
         f.close()
-    except (RuntimeError, TypeError, NameError, ValueError):
+    except (RuntimeError, TypeError, NameError, ValueError, IOError):
         commands = {}
 
     key = trigger.group(3).encode("utf-8")
@@ -264,7 +266,7 @@ def unbookie(bot, trigger):
 
     if trigger.nick.lower() in commands[u'%s' % key.lower()][1] or trigger.admin:
         del commands[u'%s' % key.lower()]
-        f = open('/home/sopel/.sopel/modules/learn_cmds', 'w')
+        f = open(os.path.join(os.path.expanduser('~'),'.sopel/learn_cmds'), 'w')
         f.write(json.dumps(commands))
         f.close()
         bot.say('Done')
@@ -279,10 +281,10 @@ def unbookie(bot, trigger):
 def bookienew(bot, trigger):
     try:
         try:
-            f = open('/home/sopel/.sopel/modules/learn_cmds', 'r')
+            f = open(os.path.join(os.path.expanduser('~'),'.sopel/learn_cmds'), 'r')
             commands = json.loads(f.read())
             f.close()
-        except (RuntimeError, TypeError, NameError, ValueError):
+        except (RuntimeError, TypeError, NameError, ValueError, IOError):
             commands = {}
 
         bot.say("%s" % commands[u"%s" % trigger.group(1).lower()][0])
