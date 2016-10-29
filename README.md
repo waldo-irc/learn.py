@@ -3,9 +3,9 @@ This is a learn module i created for Sopel bot.  The module has been tested sign
 &nbsp;
 
 # Installation
-Simply put learn.py and dictionary in your .sopel/modules folder, and activate the learn module.
+Simply put learn.py in your .sopel/modules folder and learn_cmds in .sopel/ and activate the learn module.
 
-Learn.py does the heavy lifting, dictionary holds the commands, learn_bl holds users who have been blacklisted from created commands for 24 hrs (in order to throttle).
+Learn.py does the heavy lifting, learn_cmds holds the commands, learn_bl holds users who have been blacklisted from created commands for 24 hrs (in order to throttle).
 &nbsp;
 
 After installation, do a !samplecommand to make sure it works.  !unbookie samplecommand can remove the sample command after.
