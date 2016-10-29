@@ -39,7 +39,7 @@ def bookie(bot, trigger):
         f = open('/home/sopel/.sopel/modules/learn_bl', 'r')
         lastRule = json.loads(f.read())
         f.close()
-    except (RuntimeError, TypeError, NameError, ValueError, AttributeError):
+    except (RuntimeError, TypeError, NameError, ValueError, AttributeError, IOError):
         lastRule = {}
 
     currenttime = calendar.timegm(trigger.time.timetuple())
