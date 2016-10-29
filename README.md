@@ -21,6 +21,9 @@ rebookie (usage: !rebookie cmd new stuff goes here) - This overwrites an existin
 bookielist (usage: !bookielist) - This grabs a list of all custom made commands and PM's them to the user.
 &nbsp;
 
+mybookielist (usage: !mybookielist) - This grabs a list of all custom made commands made by the user and PM's them to the user.
+&nbsp;
+
 unbookie (usage: !unbookie cmd) - This deletes a command completely.
 &nbsp;
 
